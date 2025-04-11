@@ -1,0 +1,116 @@
+using System;
+
+// Interface defining common operations
+public interface IAccountOperations
+{
+    void Deposit(decimal amount);
+    void Withdraw(decimal amount);
+}
+
+// Abstract base class
+public abstract class BankAccount : IAccountOperations
+{
+    public string AccountNumber { get; set; }
+    public string AccountHolder { get; set; }
+    public decimal Balance { get; protected set; }
+
+    public BankAccount(string accountNumber, string accountHolder)
+    {
+        AccountNumber = accountNumber;
+        AccountHolder = accountHolder;
+        Balance = 0;
+    }
+
+    public virtual void Deposit(decimal amount)
+    {
+        if (amount <= 0)
+        {
+            Console.WriteLine("Deposit amount must be positive.");
+            return;
+        }
+
+        Balance += amount;
+        Console.WriteLine($"Deposited {amount:C} to {AccountNumber}. New balance: {Balance:C}");
+    }
+
+    public abstract void Withdraw(decimal amount);
+
+    public void ShowDetails()
+    {
+        Console.WriteLine($"Account: {AccountNumber}, Holder: {AccountHolder}, Balance: {Balance:C}");
+    }
+}
+
+// Savings account with minimum balance rule
+public class SavingsAccount : BankAccount
+{
+    private const decimal MinimumBalance = 500;
+
+    public SavingsAccount(string accountNumber, string accountHolder)
+        : base(accountNumber, accountHolder) { }
+
+    public override void Withdraw(decimal amount)
+    {
+        if (amount <= 0)
+        {
+            Console.WriteLine("Withdrawal amount must be positive.");
+            return;
+        }
+
+        if (Balance - amount < MinimumBalance)
+        {
+            Console.WriteLine("Insufficient balance. Minimum balance must be maintained.");
+        }
+        else
+        {
+            Balance -= amount;
+            Console.WriteLine($"Withdrew {amount:C} from {AccountNumber}. New balance: {Balance:C}");
+        }
+    }
+}
+
+// Current account with no minimum balance
+public class CurrentAccount : BankAccount
+{
+    public CurrentAccount(string accountNumber, string accountHolder)
+        : base(accountNumber, accountHolder) { }
+
+    public override void Withdraw(decimal amount)
+    {
+        if (amount <= 0)
+        {
+            Console.WriteLine("Withdrawal amount must be positive.");
+            return;
+        }
+
+        if (amount > Balance)
+        {
+            Console.WriteLine("Insufficient funds.");
+        }
+        else
+        {
+            Balance -= amount;
+            Console.WriteLine($"Withdrew {amount:C} from {AccountNumber}. New balance: {Balance:C}");
+        }
+    }
+}
+
+// Main program
+class Program
+{
+    static void Main()
+    {
+        BankAccount savings = new SavingsAccount("S123", "Alice");
+        BankAccount current = new CurrentAccount("C456", "Bob");
+
+        savings.Deposit(1000);
+        savings.Withdraw(600);
+        savings.ShowDetails();
+
+        Console.WriteLine();
+
+        current.Deposit(500);
+        current.Withdraw(200);
+        current.ShowDetails();
+    }
+}

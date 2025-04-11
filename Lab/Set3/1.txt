@@ -1,0 +1,57 @@
+using System;
+
+namespace DelegateEventDemo
+{
+    // Step 1: Define a delegate
+    public delegate void LoginEventHandler(string username);
+
+    // Step 2: Define a class with an event
+    class UserSystem
+    {
+        // Step 3: Define an event based on the delegate
+        public event LoginEventHandler UserLoggedIn;
+
+        // Method to simulate login
+        public void Login(string username)
+        {
+            Console.WriteLine($"{username} is attempting to log in...");
+
+            // Step 4: Trigger the event
+            OnUserLoggedIn(username);
+        }
+
+        // Protected virtual method to allow derived classes to override the event invocation
+        protected virtual void OnUserLoggedIn(string username)
+        {
+            if (UserLoggedIn != null)
+            {
+                UserLoggedIn(username); // Invoke the event
+            }
+        }
+    }
+
+    class Program
+    {
+        // Method that matches the delegate signature
+        static void DisplayWelcomeMessage(string username)
+        {
+            Console.WriteLine($"Welcome, {username}!");
+        }
+
+        static void Main(string[] args)
+        {
+            UserSystem userSystem = new UserSystem();
+
+            // Step 5: Subscribe to the event
+            userSystem.UserLoggedIn += DisplayWelcomeMessage;
+
+            // Simulate login
+            Console.Write("Enter username: ");
+            string username = Console.ReadLine();
+
+            userSystem.Login(username);
+
+            Console.ReadLine();
+        }
+    }
+}

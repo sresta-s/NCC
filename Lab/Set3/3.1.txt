@@ -1,0 +1,41 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace LINQLambdaStudentFilter
+{
+    class Student
+    {
+        public string Name { get; set; }
+        public double Grade { get; set; }
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            // Create a list of students
+            List<Student> students = new List<Student>()
+            {
+                new Student { Name = "Alice", Grade = 85.5 },
+                new Student { Name = "Bob", Grade = 67.0 },
+                new Student { Name = "Charlie", Grade = 92.3 },
+                new Student { Name = "Diana", Grade = 58.4 },
+                new Student { Name = "Ethan", Grade = 76.2 }
+            };
+
+            // Use LINQ with lambda expression to filter students with Grade >= 70
+            var passedStudents = students.Where(student => student.Grade >= 70);
+
+            Console.WriteLine("Students who passed (Grade >= 70):\n");
+
+            // Display the filtered list
+            foreach (var student in passedStudents)
+            {
+                Console.WriteLine($"{student.Name} - Grade: {student.Grade}");
+            }
+
+            Console.ReadLine();
+        }
+    }
+}
